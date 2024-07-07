@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Advanced Animation and Interaction</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // ایجاد توپ
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+        const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // اضافه کردن نور
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+
+        camera.position.z = 5;
+
+        // متغیرهای انیمیشن
+        let time = 0;
+        const amplitude = 0.5;
+        const frequency = 2;
+
+        // متغیرهای ماوس
+        let mouseX = 0;
+        let mouseY = 0;
+
+        // تابع انیمیشن
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // انیمیشن موجی شکل
+            time += 0.05;
+            sphere.position.y = Math.sin(time * frequency) * amplitude;
+
+            // چرخش بر اساس موقعیت ماوس
+            sphere.rotation.x = mouseY * 0.05;
+            sphere.rotation.y = mouseX * 0.05;
+
+            renderer.render(scene, camera);
+        }
+
+        // گوش دادن به حرکت ماوس
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        animate();
+    </script>
+</body>
+</html>

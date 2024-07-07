@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Physics Simulation</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+    <script>
+        // تنظیمات Three.js
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // تنظیمات Cannon.js
+        const world = new CANNON.World();
+        world.gravity.set(0, -9.82, 0);
+
+        // ایجاد زمین
+        const groundShape = new CANNON.Plane();
+        const groundBody = new CANNON.Body({ mass: 0 });
+        groundBody.addShape(groundShape);
+        groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+        world.addBody(groundBody);
+
+        const groundGeometry = new THREE.PlaneGeometry(10, 10);
+        const groundMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, side: THREE.DoubleSide });
+        const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+        groundMesh.rotation.x = Math.PI / 2;
+        scene.add(groundMesh);
+
+        // ایجاد توپ‌ها
+        const spheres = [];
+        const sphereBodies = [];
+
+        for (let i = 0; i < 5; i++) {
+            const radius = 0.1 + Math.random() * 0.2;
+            const sphereShape = new CANNON.Sphere(radius);
+            const sphereBody = new CANNON.Body({
+                mass: 5,
+                shape: sphereShape,
+                position: new CANNON.Vec3(Math.random() - 0.5, 5 + i * 0.5, Math.random() - 0.5)
+            });
+            world.addBody(sphereBody);
+            sphereBodies.push(sphereBody);
+
+            const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+            const sphereMaterial = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
+            const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            scene.add(sphereMesh);
+            spheres.push(sphereMesh);
+        }
+
+        camera.position.set(0, 5, 10);
+        camera.lookAt(0, 0, 0);
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            world.step(1 / 60);
+
+            for (let i = 0; i < spheres.length; i++) {
+                spheres[i].position.copy(sphereBodies[i].position);
+                spheres[i].quaternion.copy(sphereBodies[i].quaternion);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

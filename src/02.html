@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Three.js Scene</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // ایجاد عناصر اصلی
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // اضافه کردن نور
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        // ایجاد چند مکعب
+        for(let i = 0; i < 5; i++) {
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshPhongMaterial({color: Math.random() * 0xffffff});
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.set(
+                Math.random() * 4 - 2,
+                Math.random() * 4 - 2,
+                Math.random() * 4 - 2
+            );
+            scene.add(cube);
+        }
+
+        camera.position.z = 5;
+
+        // تابع انیمیشن
+        function animate() {
+            requestAnimationFrame(animate);
+
+            scene.children.forEach(child => {
+                if(child instanceof THREE.Mesh) {
+                    child.rotation.x += 0.01;
+                    child.rotation.y += 0.01;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

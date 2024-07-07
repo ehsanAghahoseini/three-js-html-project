@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Custom Shader</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // شیدر ورتکس
+        const vertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        // شیدر فرگمنت
+        const fragmentShader = `
+            uniform float time;
+            varying vec2 vUv;
+            
+            void main() {
+                vec2 position = -1.0 + 2.0 * vUv;
+                float red = abs(sin(position.x * position.y + time / 5.0));
+                float green = abs(sin(position.x * position.y + time / 4.0));
+                float blue = abs(sin(position.x * position.y + time / 3.0));
+                gl_FragColor = vec4(red, green, blue, 1.0);
+            }
+        `;
+
+        // ایجاد متریال با شیدر سفارشی
+        const shaderMaterial = new THREE.ShaderMaterial({
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            uniforms: {
+                time: { value: 0.0 }
+            }
+        });
+
+        // ایجاد کره
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+        const sphere = new THREE.Mesh(geometry, shaderMaterial);
+        scene.add(sphere);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // به‌روزرسانی زمان برای انیمیشن شیدر
+            shaderMaterial.uniforms.time.value += 0.05;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
