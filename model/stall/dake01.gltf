@@ -1,0 +1,206 @@
+{
+    "asset": {
+        "copyright": "almt",
+        "generator": "maya2glTF main fbbc95e5dc4d",
+        "version": "2.0"
+    },
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "scene": 0,
+    "nodes": [
+        {
+            "name": "group12_pCylinder19",
+            "children": [
+                1
+            ],
+            "translation": [
+                0.0,
+                9.729978561401368,
+                0.0
+            ]
+        },
+        {
+            "name": "group12_pCylinder19:PIV",
+            "mesh": 0,
+            "translation": [
+                0.0,
+                -9.729978561401368,
+                0.0
+            ]
+        }
+    ],
+    "meshes": [
+        {
+            "name": "group12_pCylinder19Shape",
+            "extras": {
+                "targetNames": []
+            },
+            "primitives": [
+                {
+                    "attributes": {
+                        "NORMAL": 1,
+                        "POSITION": 2,
+                        "TANGENT": 3,
+                        "TEXCOORD_0": 4
+                    },
+                    "indices": 0,
+                    "mode": 4,
+                    "material": 0
+                }
+            ]
+        }
+    ],
+    "materials": [
+        {
+            "name": "GLSLShader1",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "metallicFactor": 0.5,
+                "roughnessFactor": 0.5
+            },
+            "emissiveFactor": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "accessors": [
+        {
+            "name": "group12_pCylinder19Shape#0/indices",
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5123,
+            "count": 143328,
+            "max": [
+                54671
+            ],
+            "min": [
+                0
+            ],
+            "type": "SCALAR"
+        },
+        {
+            "name": "group12_pCylinder19Shape#0/vertices/NORMAL",
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 54672,
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "type": "VEC3"
+        },
+        {
+            "name": "group12_pCylinder19Shape#0/vertices/POSITION",
+            "bufferView": 1,
+            "byteOffset": 656064,
+            "componentType": 5126,
+            "count": 54672,
+            "max": [
+                18.67209243774414,
+                19.78702163696289,
+                16.170507431030278
+            ],
+            "min": [
+                -18.67209243774414,
+                -0.32706448435783389,
+                -16.170507431030278
+            ],
+            "type": "VEC3"
+        },
+        {
+            "name": "group12_pCylinder19Shape#0/vertices/TANGENT",
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 54672,
+            "max": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "type": "VEC4"
+        },
+        {
+            "name": "group12_pCylinder19Shape#0/vertices/TEXCOORD_0",
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 54672,
+            "max": [
+                1.0000001192092896,
+                1.0000001192092896
+            ],
+            "min": [
+                0.0,
+                0.0
+            ],
+            "type": "VEC2"
+        }
+    ],
+    "bufferViews": [
+        {
+            "name": "dake01/data/indices-2",
+            "buffer": 0,
+            "byteOffset": 2624256,
+            "byteLength": 286656,
+            "target": 34963
+        },
+        {
+            "name": "dake01/data/vertices-12",
+            "buffer": 0,
+            "byteOffset": 874752,
+            "byteLength": 1312128,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "name": "dake01/data/vertices-16",
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 874752,
+            "byteStride": 16,
+            "target": 34962
+        },
+        {
+            "name": "dake01/data/vertices-8",
+            "buffer": 0,
+            "byteOffset": 2186880,
+            "byteLength": 437376,
+            "byteStride": 8,
+            "target": 34962
+        }
+    ],
+    "buffers": [
+        {
+            "name": "dake01/data",
+            "byteLength": 2910912,
+            "uri": "dake010.bin"
+        }
+    ]
+}

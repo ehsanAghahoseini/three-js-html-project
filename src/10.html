@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GLTF Model Viewer with Camera Animation</title>
     <style>
-        body { margin: 0; }
-        canvas { display: block; }
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
     </style>
 </head>
+
 <body>
+
+    <audio id="backgroundMusic" src="../audio/ring.mp3"></audio>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
     <script>
         let scene, camera, renderer, controls, model;
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
 
         function init() {
             scene = new THREE.Scene();
@@ -29,20 +40,20 @@
 
             const ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
             scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0xffffff, 0.8);
+            const pointLight = new THREE.PointLight(0xffffff, 1.8);
             pointLight.position.set(5, 5, 5);
             scene.add(pointLight);
 
-            camera.position.set(0, 10, 0);
-            camera.lookAt(0, 0, 0);
+            //camera.position.set(0, 10, 0);
+            //camera.lookAt(0, 0, 0);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.screenSpacePanning = false;
             controls.minDistance = 1;
-            controls.maxDistance = 1.5;
-            controls.maxPolarAngle = Math.PI / 1.7;
+            controls.maxDistance = 10;
+            controls.maxPolarAngle = Math.PI / 1.9;
 
             loadModel();
         }
@@ -56,7 +67,7 @@
             loader.setDRACOLoader(dracoLoader);
 
             loader.load(
-                'model/shop.gltf',
+                '../model/stall/dake01.gltf',
                 function (gltf) {
                     model = gltf.scene;
                     scene.add(model);
@@ -69,9 +80,10 @@
                     model.scale.multiplyScalar(scale);
                     model.position.sub(center.multiplyScalar(scale));
 
-                                // محاسبه موقعیت مناسب برای دوربین
-            const distance = maxDim * scale * 1.5; // ضریب 1.5 برای فاصله مناسب
-            const endPosition = new THREE.Vector3(0, size.y * scale / 2, distance);
+                    const audio = document.getElementById('backgroundMusic');
+                    setTimeout(() => {
+                        //audio.play();
+                    }, 2500)
 
                     animateCamera();
                 },
@@ -85,26 +97,31 @@
         }
 
         function animateCamera() {
-            const startPosition = { x: 0, y: 10, z: 0 };
-            const endPosition = { x: 0, y: 0, z: 1 }; 
+            const startPosition = new THREE.Vector3(10, 10, 10);
+            const endPosition = new THREE.Vector3(0, -1, 2);
+            const duration = 3000; // مدت زمان انیمیشن به میلی‌ثانیه
+            const startTime = performance.now();
 
-            new TWEEN.Tween(startPosition)
-                .to(endPosition, 2000)
-                .easing(TWEEN.Easing.Quadratic.InOut)
-                .onUpdate(() => {
-                    camera.position.set(startPosition.x, startPosition.y, startPosition.z);
-                    camera.lookAt(0, 0, 0);
-                })
-                .onComplete(() => {
+            function updateCamera() {
+                const elapsedTime = performance.now() - startTime;
+                const t = Math.min(elapsedTime / duration, 1); // مقدار زمان بین 0 و 1
+                camera.position.lerpVectors(startPosition, endPosition, t);
+                camera.lookAt(new THREE.Vector3(0, 0, 0));
+                controls.update();
+
+                if (t < 1) {
+                    requestAnimationFrame(updateCamera);
+                } else {
                     controls.target.set(0, 0, 0);
                     controls.update();
-                })
-                .start();
+                }
+            }
+
+            requestAnimationFrame(updateCamera);
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            TWEEN.update();
             controls.update();
             renderer.render(scene, camera);
         }
@@ -115,9 +132,64 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
+        function onMouseClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+
+            const intersects = raycaster.intersectObjects(scene.children, true);
+
+            if (intersects.length > 0) {
+                console.log(intersects)
+                const clickedObject = intersects[0].object;
+                moveToObject('group12_pCylinder19');
+            }
+        }
+
+        function moveToObject(clickedName) {
+            // مپ نام‌های کلیک شده به نام‌های اشیاء هدف
+            const objectMap = {
+                'group12_pCylinder19': 'group12_pCylinder19Shape#0/indices',
+                //'ClickableObject_2': 'TargetObject2'
+                // اضافه کردن موارد بیشتر بر اساس نیاز
+            };
+
+            const targetName = objectMap[clickedName];
+            if (!targetName) return;
+
+            const targetObject = model.getObjectByName(targetName);
+            if (!targetObject) return;
+
+            const box = new THREE.Box3().setFromObject(targetObject);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+
+            // محاسبه موقعیت جدید دوربین
+            const distance = Math.max(size.x, size.y, size.z) * 2;
+            const direction = new THREE.Vector3(0, 0, 1).applyQuaternion(targetObject.quaternion);
+            const newPosition = center.clone().add(direction.multiplyScalar(distance));
+
+            // انیمیشن حرکت دوربین
+            new TWEEN.Tween(camera.position)
+                .to(newPosition, 1000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(() => {
+                    camera.lookAt(center);
+                })
+                .onComplete(() => {
+                    controls.target.copy(center);
+                    controls.update();
+                })
+                .start();
+        }
+
+
         init();
         animate();
         window.addEventListener('resize', onWindowResize, false);
+        window.addEventListener('click', onMouseClick, false);
     </script>
 </body>
+
 </html>

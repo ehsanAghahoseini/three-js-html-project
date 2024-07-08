@@ -53,7 +53,7 @@
 
         // بارگذاری مدل GLTF
         loader.load(
-            'path/to/your/model.gltf', // مسیر فایل GLTF خود را اینجا قرار دهید
+            '../model/new-shop/scene.gltf', // مسیر فایل GLTF خود را اینجا قرار دهید
             function (gltf) {
                 console.log('Model loaded successfully');
                 const model = gltf.scene;
@@ -79,12 +79,6 @@
             }
         );
 
-        // اضافه کردن یک مکعب ساده برای اطمینان از عملکرد صحیح صحنه
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-        const cube = new THREE.Mesh(geometry, material);
-        cube.position.set(-2, 0, 0);
-        scene.add(cube);
 
         // تابع انیمیشن
         function animate() {
