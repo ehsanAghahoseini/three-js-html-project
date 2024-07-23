@@ -51,9 +51,9 @@
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.screenSpacePanning = false;
-            controls.minDistance = 1;
-            controls.maxDistance = 10;
-            controls.maxPolarAngle = Math.PI / 1.9;
+            controls.minDistance = 0.3;
+            controls.maxDistance = 2;
+            controls.maxPolarAngle = Math.PI / 1.95;
 
             loadModel();
         }
@@ -67,7 +67,7 @@
             loader.setDRACOLoader(dracoLoader);
 
             loader.load(
-                '../model/shop/dake_GLTF.gltf',
+                '../model/shop/dake01.gltf',
                 function (gltf) {
                     model = gltf.scene;
                     scene.add(model);
